@@ -11,11 +11,11 @@ export async function submitToDify(formData: FormData): Promise<string> {
   const payload = {
     inputs: {
       category: formData.category,
-      mood: formData.mood.join(', '),
+      mood: formData.mood,
       mood_free: formData.mood_free,
-      scene: formData.scene.join(', '),
+      scene: formData.scene,
       scene_free: formData.scene_free,
-      preference: formData.preference.join(', '),
+      preference: formData.preference,
       preference_free: formData.preference_free,
     },
     response_mode: 'blocking',

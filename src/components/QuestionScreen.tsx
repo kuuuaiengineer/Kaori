@@ -43,12 +43,8 @@ export default function QuestionScreen({
 }: QuestionScreenProps) {
   const [step, setStep] = useState(1);
 
-  const handleOptionToggle = (field: 'mood' | 'scene' | 'preference', value: string) => {
-    const current = formData[field];
-    const updated = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value];
-    onUpdateFormData({ [field]: updated });
+  const handleOptionSelect = (field: 'mood' | 'scene' | 'preference', value: string) => {
+    onUpdateFormData({ [field]: value });
   };
 
   const handleNext = () => {
@@ -110,9 +106,9 @@ export default function QuestionScreen({
               {sceneOptions.map((option) => (
                 <button
                   key={option}
-                  onClick={() => handleOptionToggle('scene', option)}
+                  onClick={() => handleOptionSelect('scene', option)}
                   className={`w-full py-4 px-6 rounded-xl min-h-[56px] transition-all duration-200 ${
-                    formData.scene.includes(option)
+                    formData.scene === option
                       ? 'bg-stone-800 text-white shadow-md'
                       : 'bg-white text-stone-800 hover:bg-stone-50 shadow-sm'
                   }`}
@@ -146,9 +142,9 @@ export default function QuestionScreen({
               {moodOptions.map((option) => (
                 <button
                   key={option}
-                  onClick={() => handleOptionToggle('mood', option)}
+                  onClick={() => handleOptionSelect('mood', option)}
                   className={`w-full py-4 px-6 rounded-xl min-h-[56px] transition-all duration-200 ${
-                    formData.mood.includes(option)
+                    formData.mood === option
                       ? 'bg-stone-800 text-white shadow-md'
                       : 'bg-white text-stone-800 hover:bg-stone-50 shadow-sm'
                   }`}
@@ -182,9 +178,9 @@ export default function QuestionScreen({
               {preferenceOptions.map((option) => (
                 <button
                   key={option}
-                  onClick={() => handleOptionToggle('preference', option)}
+                  onClick={() => handleOptionSelect('preference', option)}
                   className={`w-full py-4 px-6 rounded-xl min-h-[56px] transition-all duration-200 ${
-                    formData.preference.includes(option)
+                    formData.preference === option
                       ? 'bg-stone-800 text-white shadow-md'
                       : 'bg-white text-stone-800 hover:bg-stone-50 shadow-sm'
                   }`}

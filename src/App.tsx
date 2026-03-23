@@ -9,11 +9,11 @@ function App() {
   const [screen, setScreen] = useState<Screen>('top');
   const [formData, setFormData] = useState<FormData>({
     category: null,
-    mood: [],
+    mood: '',
     mood_free: '',
-    scene: [],
+    scene: '',
     scene_free: '',
-    preference: [],
+    preference: '',
     preference_free: '',
   });
   const [result, setResult] = useState<string | null>(null);
@@ -48,11 +48,11 @@ function App() {
     setScreen('top');
     setFormData({
       category: null,
-      mood: [],
+      mood: '',
       mood_free: '',
-      scene: [],
+      scene: '',
       scene_free: '',
-      preference: [],
+      preference: '',
       preference_free: '',
     });
     setResult(null);

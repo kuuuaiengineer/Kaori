@@ -1,4 +1,6 @@
 import { RefreshCw, Loader2 } from 'lucide-react';
+import { parseResultToCards } from '../utils/parseResult';
+import { DEFAULT_FRAGRANCE } from '../data/fragranceData';
 
 interface ResultScreenProps {
   result: string | null;
@@ -8,9 +10,19 @@ interface ResultScreenProps {
 }
 
 export default function ResultScreen({ result, loading, error, onReset }: ResultScreenProps) {
+  const parsed = result ? parseResultToCards(result) : { cards: [], closingMessage: undefined };
+  // リスト外の香りカードは表示しない（DEFAULTにフォールバックしたものは非表示）
+  const cards = parsed.cards.filter(
+    (c) => c.isSummary || c.fragrance !== DEFAULT_FRAGRANCE
+  );
+  const firstCard = cards.find((c) => !c.isSummary);
+  const gradientFrom = firstCard?.fragrance.gradientFrom || 'from-amber-50';
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-stone-100">
-      <div className="max-w-md mx-auto px-6 py-8 pb-24">
+    <div
+      className={`min-h-screen transition-colors duration-500 bg-gradient-to-b ${gradientFrom} to-stone-100`}
+    >
+      <div className="max-w-md mx-auto px-6 py-8 pb-40">
         <div className="mb-8">
           <h2 className="text-2xl font-light text-stone-800 mb-2">
             あなたへのおすすめ
@@ -35,17 +47,57 @@ export default function ResultScreen({ result, loading, error, onReset }: Result
         )}
 
         {result && !loading && (
-          <div className="bg-white rounded-2xl p-6 shadow-md space-y-4">
-            <div className="prose prose-stone max-w-none">
-              <div className="whitespace-pre-wrap text-stone-800 leading-relaxed">
-                {result}
+          <div className="space-y-6">
+            {cards.length > 0 ? (
+              cards.map((card, index) =>
+                card.isSummary ? (
+                  <div
+                    key={index}
+                    className="text-stone-700 leading-relaxed text-[15px] whitespace-pre-wrap"
+                  >
+                    {card.text}
+                  </div>
+                ) : (
+                  <div
+                    key={index}
+                    className={`rounded-2xl overflow-hidden shadow-md border-l-4 ${card.fragrance.color}`}
+                    style={{ backgroundColor: card.fragrance.colorLightHex }}
+                  >
+                    <div className="aspect-[16/10] w-full overflow-hidden bg-stone-200">
+                      <img
+                        src={card.fragrance.imageUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <div className="prose prose-stone max-w-none">
+                        <div className="whitespace-pre-wrap text-stone-800 leading-relaxed text-[15px]">
+                          {card.text}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )
+            ) : (
+              <div className="bg-white rounded-2xl p-6 shadow-md">
+                <div className="whitespace-pre-wrap text-stone-800 leading-relaxed">
+                  {result}
+                </div>
               </div>
-            </div>
+            )}
+
+            {cards.length > 0 && parsed.closingMessage && (
+              <p className="text-stone-700 text-center text-[15px] leading-relaxed pt-2">
+                {parsed.closingMessage}
+              </p>
+            )}
           </div>
         )}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 p-6">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-stone-200 p-6">
         <div className="max-w-md mx-auto">
           <button
             onClick={onReset}
